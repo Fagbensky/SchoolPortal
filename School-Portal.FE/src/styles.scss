@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+.error-snackbar-popup .mdc-snackbar__surface{
+    background-color: oklch(0.505 0.213 27.518) !important;
+}
+
+.success-snackbar-popup .mdc-snackbar__surface{
+    background-color: oklch(0.527 0.154 150.069) !important;
+}

@@ -1,0 +1,72 @@
+<section class="max-w-2xl mx-auto">
+    <ng-container *ngIf="{ data: subjectWithStudents$ | async } as data">
+        @if (data.data?.status) {
+        <section
+            class="bg-white p-4 mb-4 rounded-lg shadow-md w-full grid grid-cols-3 md:grid-cols-4 gap-4 cursor-pointer items-end">
+            <div class="mr-auto col-span-2">
+                <h5 class="text-lg text-gray-600">Title</h5>
+                <p class="text-2xl font-bold text-blue-700">
+                    {{ data.data?.data?.name }}
+                </p>
+            </div>
+
+            <div class="mr-6">
+                <h5 class="text-sm text-gray-600">Pass Mark</h5>
+                <p class="font-bold">{{ data.data?.data?.minimumPassMark }}</p>
+            </div>
+
+            <div>
+                <h5 class="text-sm text-gray-600">Type</h5>
+                <p [ngClass]="{
+            'text-blue-500': !!data.data?.data?.isRequired,
+        }" class="font-bold">
+                    {{ data.data?.data?.isRequired ? "Compulsory" : "Elective" }}
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h4 class="text-gray-600 text-lg font-bold mb-2">Enrolled Students</h4>
+            <mat-accordion>
+                @for(item of (data.data?.data?.students ?? []); track $index){
+                <mat-expansion-panel class="!bg-white" hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="text-lg font-bold">{{ item.name }}</mat-panel-title>
+                        <mat-panel-description>
+                            @if(item.grade){
+                            <p class="text-gray-600">Score: <span class="font-bold">{{item.grade.value}}</span></p>
+                            <p class="font-bold ml-auto"
+                                [ngClass]="item.grade.value >= (data.data?.data?.minimumPassMark ?? 0) ? 'text-green-700' : 'text-red-700'">
+                                {{item.grade.value >= (data.data?.data?.minimumPassMark ?? 0) ? 'Passed' : 'Failed'}}
+                            </p>
+                            }
+                            @else {
+                            <p class="text-gray-600">Not Graded</p>
+                            }
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <form
+                        (submit)="item.grade ? editGrade($event, item.grade.id) : assignGrade($event, item.id, data.data?.data?.id ?? 0)">
+                        <mat-form-field class="w-full">
+                            <mat-label>Score</mat-label>
+                            <input required name="value" type="number" [max]="100" [min]="1" matInput
+                                [value]="item.grade?.value" />
+                        </mat-form-field>
+
+                        <mat-form-field class="w-full">
+                            <mat-label>Note</mat-label>
+                            <textarea required name="note" matInput [value]="item.grade?.note" [maxLength]="500"></textarea>
+                        </mat-form-field>
+
+                        <button type="submit" mat-flat-button>{{!item.grade ? 'Assign Grade' : 'Edit Grade'}}</button>
+                    </form>
+                </mat-expansion-panel>
+                }
+            </mat-accordion>
+        </section>
+        } @else {
+        <app-not-found title="Subject"
+            [body]="data.data?.message ?? 'Sorry we are having problem connecting with our servers.'"></app-not-found>
+        }
+    </ng-container>
+</section>

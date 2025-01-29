@@ -1,0 +1,47 @@
+<mat-drawer-container
+  *ngIf="{ isMobile: isMobile$ | async } as data"
+  class="example-container"
+  [hasBackdrop]="hasBackdrop"
+>
+  <mat-drawer #drawer [opened]="opened" [mode]="mode">
+    <section
+      class="bg-linear-to-r to-blue-500 from-blue-700 w-full h-full flex flex-col items-start text-white px-5 py-6"
+    >
+      <img src="assets/img/logo-light.png" alt="" />
+      <ul class="flex flex-col gap-2 mt-7 w-full">
+        <li *ngFor="let item of routes">
+          <a
+            (click)="isMobile && drawer.toggle()"
+            class="flex items-center gap-3 p-2 cursor-pointer"
+            [routerLink]="item?.route"
+            routerLinkActive="bg-white/15 rounded-sm"
+            >{{ item?.label }}</a
+          >
+        </li>
+      </ul>
+    </section>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="min-h-screen">
+      <section class="px-3 py-2 sm:px-6 sm:py-4 flex items-center">
+        <span class="cursor-pointer block lg:hidden" (click)="drawer.toggle()"
+          ><svg
+            class="w-6 h-6"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </span>
+      </section>
+      <div class="max-w-screen-xl 2xl:mx-auto px-2 md:px-6 py-4 flex-none">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

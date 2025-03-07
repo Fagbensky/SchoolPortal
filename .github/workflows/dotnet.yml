@@ -46,15 +46,6 @@ jobs:
           files: '${{ env.Project_Directory }}/publish/appsettings.json'
       env:
           ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }}
-
-    - name: Delete all files in the directory
-      uses: StephanThierry/ftp-delete-action@v2.1
-      with:
-          host: ${{ secrets.FTP_SERVER }}
-          user: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          remoteFiles: /wwwroot/*
-          ignoreSSL: 1
  
     - name: FTP Deploy 
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5

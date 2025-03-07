@@ -44,7 +44,6 @@ jobs:
       run: |
         dotnet new tool-manifest
         dotnet tool install dotnet-ef
-        dotnet add package Microsoft.Data.SqlClient --version latest
   
     - name: Generate EF migration script
       run: dotnet ef migrations bundle --startup-project ${{env.Project_Directory}} --output ${{env.Project_Directory}}/sql/efbundle.exe --configuration Bundle

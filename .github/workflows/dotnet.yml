@@ -46,13 +46,10 @@ jobs:
         dotnet tool install dotnet-ef
   
     - name: Generate EF migration script
-      run: dotnet ef migrations script --idempotent --startup-project ${{ env.Project_Directory }} --output ${{ env.Project_Directory }}/sql/migrate.sql
+      run: dotnet ef migrations bundle --startup-project ${{env.Project_Directory}} --output ${{env.Project_Directory}}/sql/efbundle.exe --configuration Bundle
 
     - name: Apply EF migration script
-      uses: Azure/sql-action@v1.2
-      with:
-        connection-string: ${{ secrets.REMOTE_DB_CONN_STRING }}
-        sql-file: ${{ env.Project_Directory }}/sql/migrate.sql
+      run: ${{env.Project_Directory}}/sql/efbundle.exe --connection ${{ secrets.REMOTE_DB_CONN_STRING }}
 
     - name: App Settings Variable Substitution
       uses: microsoft/variable-substitution@v1

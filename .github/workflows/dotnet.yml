@@ -49,7 +49,7 @@ jobs:
       run: dotnet ef migrations bundle --startup-project ${{env.Project_Directory}} --output ${{env.Project_Directory}}/sql/efbundle.exe --configuration Bundle
 
     - name: Apply EF migration script
-      run: ${{env.Project_Directory}}/sql/efbundle.exe --connection ${{ secrets.REMOTE_DB_CONN_STRING }}
+      run: ${{env.Project_Directory}}/sql/efbundle.exe --connection "${{ secrets.REMOTE_DB_CONN_STRING }}"
 
     - name: App Settings Variable Substitution
       uses: microsoft/variable-substitution@v1

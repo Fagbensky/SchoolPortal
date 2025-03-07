@@ -64,6 +64,6 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         port: 21  
         local-dir: ${{ env.Project_Directory }}/publish/
-        server-dir: /wwwroot/
+        server-dir: ./wwwroot/
         state-name: .ftp-deploy-sync-state.json
         dangerous-clean-slate: true

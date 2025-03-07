@@ -12,8 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-     env:
+    env:
       Project_Directory: ./School-Portal.BE/School-Portal.API  
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4

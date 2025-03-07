@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  Build and Deploy:
+  Build_And_Deploy:
     runs-on: ubuntu-latest
 
     env:

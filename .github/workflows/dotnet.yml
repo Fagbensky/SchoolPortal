@@ -29,19 +29,19 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: $env:Project_Directory
+      working-directory: ${{ env.Project_Directory }}
 
     - name: Build
       run: dotnet build --no-restore
-      working-directory: $env:Project_Directory
+      working-directory: ${{ env.Project_Directory }}
 
     - name: Run tests
       run: dotnet test --no-restore --verbosity normal
-      working-directory: $env:Project_Directory
+      working-directory: ${{ env.Project_Directory }}
       
     - name: Publish
       run: dotnet publish --configuration Release --output ./publish
-      working-directory: $env:Project_Directory
+      working-directory: ${{ env.Project_Directory }}
 
     - name: Delete all files in the directory
       uses: StephanThierry/ftp-delete-action@v2.1
@@ -59,7 +59,7 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         port: 21  
-        local-dir: $env:Project_Directory/publish/
+        local-dir: ${{ env.Project_Directory }}/publish/
         server-dir: /wwwroot/
         state-name: .ftp-deploy-sync-state.json
         dangerous-clean-slate: true

@@ -13,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      Project_Directory: ./School-Portal.BE/School-Portal.API  
-      Startup-Project: School-Portal.API  
+      Project_Directory: ./School-Portal.BE/School-Portal.API 
 
     steps:
     - name: Checkout Code
@@ -47,7 +46,7 @@ jobs:
         dotnet tool install dotnet-ef
   
     - name: Generate EF migration script
-      run: dotnet ef migrations script --idempotent --startup-project ${{ env.Startup-Project }} --output ${{ env.Project_Directory }}/sql/migrate.sql
+      run: dotnet ef migrations script --idempotent --startup-project ${{ env.Project_Directory }} --output ${{ env.Project_Directory }}/sql/migrate.sql
 
     - name: Apply EF migration script
       uses: Azure/sql-action@v1.2

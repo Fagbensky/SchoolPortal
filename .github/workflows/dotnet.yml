@@ -57,14 +57,14 @@ jobs:
         files: '${{ env.Project_Directory }}/publish/appsettings.json' 
       env:
         ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }} 
- 
-    - name: FTP Deploy 
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.FTP_SERVER }} 
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        port: 21  
-        local-dir: ${{ env.Project_Directory }}/publish/
-        server-dir: ./wwwroot/
-        state-name: .ftp-deploy-sync-state.json
+
+    - name: Deploy App
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.WEB_DEPLOY_WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.WEB_DEPLOY_SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.WEB_DEPLOY_SERVER_USERNAME }}
+          server-password: ${{ secrets.WEB_DEPLOY_SERVER_PASSWORD }}
+          source-path: '${{ env.Project_Directory }}/publish/'
+          target-path: './wwwroot/'
+          target-delete: true

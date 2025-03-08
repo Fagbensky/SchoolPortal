@@ -1,4 +1,4 @@
-name: .NET Core Build And Deploy
+name: .NET Core Build and Deploy
 
 on:
   push:
@@ -10,59 +10,97 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
-      Project_Directory: /School-Portal.BE/School-Portal.API 
+      Project_Directory: ./School-Portal.BE/School-Portal.API
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4 
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: .${{ env.Project_Directory }}
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ${{ env.Project_Directory }}
 
-    - name: Build
-      run: dotnet build --no-restore
-      working-directory: .${{ env.Project_Directory }}
+      - name: Build
+        run: dotnet build --no-restore
+        working-directory: ${{ env.Project_Directory }}
 
-    - name: Run tests
-      run: dotnet test --no-restore --verbosity normal
-      working-directory: .${{ env.Project_Directory }}
-      
-    - name: Publish
-      run: dotnet publish --configuration Release --output ./publish
-      working-directory: .${{ env.Project_Directory }}
+      - name: Run tests
+        run: dotnet test --no-restore --verbosity normal
+        working-directory: ${{ env.Project_Directory }}
 
-    - name: Install EF Tool
-      run: |
-        dotnet new tool-manifest
-        dotnet tool install dotnet-ef
-  
-    - name: Generate EF migration script
-      run: dotnet ef migrations bundle --startup-project .${{ env.Project_Directory }} --output .${{ env.Project_Directory }}/sql/efbundle.exe --configuration Bundle
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish
+        working-directory: ${{ env.Project_Directory }}
 
-    - name: Apply EF migration script
-      run: .${{ env.Project_Directory }}/sql/efbundle.exe --connection "${{ secrets.REMOTE_DB_CONN_STRING }}"
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-app
+          path: ${{ env.Project_Directory }}/publish
 
-    - name: App Settings Variable Substitution
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: '.${{ env.Project_Directory }}/publish/appsettings.json' 
-      env:
-        ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }} 
+  ef_migration:
+    runs-on: ubuntu-latest
+    needs: build
 
-    - name: Deploy App
-      uses: rasmusbuchholdt/simply-web-deploy@2.1.0
-      with:
-        website-name: ${{ secrets.WEB_DEPLOY_WEBSITE_NAME }}
-        server-computer-name: ${{ secrets.WEB_DEPLOY_SERVER_COMPUTER_NAME }}
-        server-username: ${{ secrets.WEB_DEPLOY_SERVER_USERNAME }}
-        server-password: ${{ secrets.WEB_DEPLOY_SERVER_PASSWORD }}
-        source-path: '${{ env.GITHUB_WORKSPACE }}${{ env.Project_Directory }}/publish/'
+    env:
+      Project_Directory: ./School-Portal.BE/School-Portal.API
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install EF Tool
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install dotnet-ef
+
+      - name: Generate EF migration script
+        run: dotnet ef migrations bundle --startup-project ${{ env.Project_Directory }} --output ${{ env.Project_Directory }}/sql/efbundle.exe --configuration Bundle
+
+      - name: Apply EF migration script
+        run: |
+          ${{ env.Project_Directory }}/sql/efbundle.exe --connection "${{ secrets.REMOTE_DB_CONN_STRING }}"
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+
+    env:
+      Project_Directory: /School-Portal.BE/School-Portal.API
+
+    steps:
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: published-app
+          path: .${{ env.Project_Directory }}/publish
+
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '.${{ env.Project_Directory }}/publish/appsettings.json'
+        env:
+          ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }}
+
+      - name: Deploy App
+        uses: rasmusbuchholdt/simply-web-deploy@2.1.0
+        with:
+          website-name: ${{ secrets.WEB_DEPLOY_WEBSITE_NAME }}
+          server-computer-name: ${{ secrets.WEB_DEPLOY_SERVER_COMPUTER_NAME }}
+          server-username: ${{ secrets.WEB_DEPLOY_SERVER_USERNAME }}
+          server-password: ${{ secrets.WEB_DEPLOY_SERVER_PASSWORD }}
+          source-path: '${{ env.GITHUB_WORKSPACE }}${{ env.Project_Directory }}/publish/'

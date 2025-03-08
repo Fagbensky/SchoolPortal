@@ -1,5 +1,6 @@
 name: .NET Core Build and Deploy
-
+env:
+    Main_Directory: /School-Portal.BE/School-Portal.API
 on:
   push:
     branches:
@@ -13,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      Project_Directory: ./School-Portal.BE/School-Portal.API
+      Project_Directory: .${{ env.Main_Directory }}
 
     steps:
       - name: Checkout Code
@@ -50,7 +51,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/appsettings.yml 
     with:
-      project_directory: ${{ env.Project_Directory }}
+      project_directory: .${{ env.Main_Directory }}
     secrets: inherit
 
   ef_migration:
@@ -58,7 +59,7 @@ jobs:
     needs: appsettings
 
     env:
-      Project_Directory: ./School-Portal.BE/School-Portal.API
+      Project_Directory: .${{ env.Main_Directory }}
 
     steps:
       - name: Checkout Code
@@ -86,7 +87,7 @@ jobs:
     needs: appsettings
 
     env:
-      Project_Directory: /School-Portal.BE/School-Portal.API
+      Project_Directory: ${{ env.Main_Directory }}
 
     steps:
 

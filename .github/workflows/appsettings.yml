@@ -23,10 +23,10 @@ jobs:
         with:
           files: '${{ inputs.project_directory }}/publish/appsettings.json'
         env:
-          ConnectionStrings.DefaultConnection: ${{ secrets[inputs.db_connection_string_secret] }}
+          ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }}
       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: published-app
-          path: ${{ env.Project_Directory }}/publish
+          path: ${{ env.project_directory }}/publish

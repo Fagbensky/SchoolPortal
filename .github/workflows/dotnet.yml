@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Project_Directory: ./School-Portal.BE/School-Portal.API 
+      Project_Directory: /School-Portal.BE/School-Portal.API 
 
     steps:
     - name: Checkout Code
@@ -26,19 +26,19 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: ${{ env.Project_Directory }}
+      working-directory: .${{ env.Project_Directory }}
 
     - name: Build
       run: dotnet build --no-restore
-      working-directory: ${{ env.Project_Directory }}
+      working-directory: .${{ env.Project_Directory }}
 
     - name: Run tests
       run: dotnet test --no-restore --verbosity normal
-      working-directory: ${{ env.Project_Directory }}
+      working-directory: .${{ env.Project_Directory }}
       
     - name: Publish
       run: dotnet publish --configuration Release --output ./publish
-      working-directory: ${{ env.Project_Directory }}
+      working-directory: .${{ env.Project_Directory }}
 
     - name: Install EF Tool
       run: |
@@ -46,15 +46,15 @@ jobs:
         dotnet tool install dotnet-ef
   
     - name: Generate EF migration script
-      run: dotnet ef migrations bundle --startup-project ${{env.Project_Directory}} --output ${{env.Project_Directory}}/sql/efbundle.exe --configuration Bundle
+      run: dotnet ef migrations bundle --startup-project .${{ env.Project_Directory }} --output .${{ env.Project_Directory }}/sql/efbundle.exe --configuration Bundle
 
     - name: Apply EF migration script
-      run: ${{env.Project_Directory}}/sql/efbundle.exe --connection "${{ secrets.REMOTE_DB_CONN_STRING }}"
+      run: .${{ env.Project_Directory }}/sql/efbundle.exe --connection "${{ secrets.REMOTE_DB_CONN_STRING }}"
 
     - name: App Settings Variable Substitution
       uses: microsoft/variable-substitution@v1
       with:
-        files: '${{ env.Project_Directory }}/publish/appsettings.json' 
+        files: '.${{ env.Project_Directory }}/publish/appsettings.json' 
       env:
         ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }} 
 
@@ -65,6 +65,6 @@ jobs:
         server-computer-name: ${{ secrets.WEB_DEPLOY_SERVER_COMPUTER_NAME }}
         server-username: ${{ secrets.WEB_DEPLOY_SERVER_USERNAME }}
         server-password: ${{ secrets.WEB_DEPLOY_SERVER_PASSWORD }}
-        source-path: '${{ env.Project_Directory }}/publish/'
+        source-path: '${{ env.GITHUB_WORKSPACE }}${{ env.Project_Directory }}/publish/'
         target-path: './wwwroot/'
         target-delete: true

@@ -39,6 +39,13 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --output ./publish
         working-directory: ${{ env.Project_Directory }}
+      
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{ env.Project_Directory }}/publish/appsettings.json'
+        env:
+          ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -88,13 +95,6 @@ jobs:
         with:
           name: published-app
           path: .${{ env.Project_Directory }}/publish
-
-      - name: App Settings Variable Substitution
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '.${{ env.Project_Directory }}/publish/appsettings.json'
-        env:
-          ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }}
 
       - name: Deploy App
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0

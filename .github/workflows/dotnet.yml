@@ -68,4 +68,3 @@ jobs:
         local-dir: ${{ env.Project_Directory }}/publish/
         server-dir: ./wwwroot/
         state-name: .ftp-deploy-sync-state.json
-        dangerous-clean-slate: true

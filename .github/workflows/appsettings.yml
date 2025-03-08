@@ -1,0 +1,32 @@
+name: App Settings Variable Substitution
+
+on:
+  workflow_call:
+    inputs:
+      project_directory:
+        required: true
+        type: string
+
+jobs:
+  substitute:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: published-app
+          path: ${{ inputs.project_directory }}/publish
+
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{ inputs.project_directory }}/publish/appsettings.json'
+        env:
+          ConnectionStrings.DefaultConnection: ${{ secrets[inputs.db_connection_string_secret] }}
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-app
+          path: ${{ env.Project_Directory }}/publish

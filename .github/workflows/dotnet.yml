@@ -66,5 +66,3 @@ jobs:
         server-username: ${{ secrets.WEB_DEPLOY_SERVER_USERNAME }}
         server-password: ${{ secrets.WEB_DEPLOY_SERVER_PASSWORD }}
         source-path: '${{ env.GITHUB_WORKSPACE }}${{ env.Project_Directory }}/publish/'
-        target-path: './wwwroot/'
-        target-delete: true

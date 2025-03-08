@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  Build_And_Deploy:
+  build:
     runs-on: ubuntu-latest
 
     env:
@@ -56,7 +56,7 @@ jobs:
       with:
         files: '${{ env.Project_Directory }}/publish/appsettings.json' 
       env:
-        ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }}
+        ConnectionStrings.DefaultConnection: ${{ secrets.DB_CONN_STRING }} 
  
     - name: FTP Deploy 
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5

@@ -1,6 +1,6 @@
 name: .NET Core Build and Deploy
 env:
-    Main_Directory: /School-Portal.BE/School-Portal.API
+  Main_Directory: /School-Portal.BE/School-Portal.API
 on:
   push:
     branches:
@@ -49,7 +49,7 @@ jobs:
 
   appsettings:
     needs: build
-    uses: ./.github/workflows/appsettings.yml 
+    uses: ./.github/workflows/appsettings.yml
     with:
       project_directory: .${{ env.Main_Directory }}
     secrets: inherit

@@ -19,7 +19,7 @@ jobs:
           path: ${{ inputs.project_directory }}/publish
 
       - name: Check env variable value
-        run: echo ${{ env.DEV_JWT_EXPIRATION }}
+        run: echo "${{ vars.DEV_JWT_EXPIRATION }}"
 
       - name: App Settings Variable Substitution
         uses: microsoft/variable-substitution@v1

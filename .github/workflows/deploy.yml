@@ -16,8 +16,8 @@ jobs:
 
     steps:
       - name: Check env variable value
-        run: echo ${{ env.DEV_JWT_EXPIRATION }}
-        
+        run: echo "${{ vars.DEV_JWT_EXPIRATION }}"
+
       - name: Checkout Code
         uses: actions/checkout@v4
 

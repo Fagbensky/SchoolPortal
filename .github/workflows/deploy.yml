@@ -92,7 +92,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: published-app
+          name: published-app-modified
           path: .${{ env.Project_Directory }}/publish
 
       - name: Deploy App
